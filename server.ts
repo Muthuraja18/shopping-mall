@@ -3,6 +3,10 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
+import { db } from './src/db/index.ts';
+import { users, bookings } from './src/db/schema.ts';
+import { eq, and } from 'drizzle-orm';
+import { requireAuth, AuthRequest } from './src/middleware/auth.ts';
 
 dotenv.config();
 
@@ -130,6 +134,146 @@ You must return your response strictly as JSON matching the requested schema. En
       reply: "It is my utmost regret, but I am momentarily experiencing difficulties accessing our main mainframe database. However, I remain at your service. Would you like me to guide you to our elite collections or our VIP valet options?",
       suggestions: ['Tell me about Gucci', 'Book valet parking', 'Check member perks'],
     });
+  }
+});
+
+// Sync User profile from Firebase authentication
+app.post('/api/users/sync', requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user!.uid;
+    const email = req.user!.email || '';
+    const { name, phone } = req.body;
+
+    // Check if user already exists
+    const existingUser = await db.select().from(users).where(eq(users.uid, uid)).limit(1);
+
+    let userRecord;
+    if (existingUser.length === 0) {
+      // Create new user record with elite default benefits
+      const cardId = `LUXE-${Math.floor(1000 + Math.random() * 9000)}-SIGN`;
+      const valetCode = `VALET-${Math.floor(100 + Math.random() * 900)}X`;
+      const memberSince = new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase();
+      
+      const inserted = await db.insert(users).values({
+        uid,
+        email,
+        name: name || req.user!.name || 'Elite Guest',
+        phone: phone || '',
+        tier: 'Signature',
+        points: 500, // Sign up bonus points
+        cardId,
+        memberSince,
+        valetCode,
+      }).returning();
+      userRecord = inserted[0];
+    } else {
+      // Update details if passed and changed
+      const toUpdate: any = {};
+      if (name && name !== existingUser[0].name) toUpdate.name = name;
+      if (phone && phone !== existingUser[0].phone) toUpdate.phone = phone;
+      
+      if (Object.keys(toUpdate).length > 0) {
+        const updated = await db.update(users).set(toUpdate).where(eq(users.uid, uid)).returning();
+        userRecord = updated[0];
+      } else {
+        userRecord = existingUser[0];
+      }
+    }
+
+    res.json({ user: userRecord });
+  } catch (error) {
+    console.error('Error in /api/users/sync:', error);
+    res.status(500).json({ error: 'Failed to sync user profile.' });
+  }
+});
+
+// Fetch current user details
+app.get('/api/me', requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user!.uid;
+    const userList = await db.select().from(users).where(eq(users.uid, uid)).limit(1);
+    if (userList.length === 0) {
+      return res.status(404).json({ error: 'User profile not found.' });
+    }
+    res.json({ user: userList[0] });
+  } catch (error) {
+    console.error('Error in /api/me:', error);
+    res.status(500).json({ error: 'Failed to fetch user profile.' });
+  }
+});
+
+// Fetch bookings for logged-in user
+app.get('/api/bookings', requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user!.uid;
+    const userBookings = await db.select().from(bookings).where(eq(bookings.userUid, uid));
+    res.json({ bookings: userBookings });
+  } catch (error) {
+    console.error('Error in GET /api/bookings:', error);
+    res.status(500).json({ error: 'Failed to fetch bookings.' });
+  }
+});
+
+// Create booking and add loyalty points
+app.post('/api/bookings', requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user!.uid;
+    const { id, storeId, storeName, type, date, time, notes } = req.body;
+    
+    // Create new booking record
+    const inserted = await db.insert(bookings).values({
+      id: id || Math.random().toString(36).substring(7),
+      userUid: uid,
+      storeId,
+      storeName,
+      type,
+      date,
+      time,
+      status: 'confirmed',
+      notes,
+    }).returning();
+
+    // Reward user with loyalty points
+    const userList = await db.select().from(users).where(eq(users.uid, uid)).limit(1);
+    if (userList.length > 0) {
+      const u = userList[0];
+      const newPoints = (u.points || 0) + 500;
+      let newTier = u.tier || 'Signature';
+      
+      if (newPoints >= 10000) {
+        newTier = 'Inner Circle';
+      } else if (newPoints >= 5000) {
+        newTier = 'Prestige';
+      } else if (newPoints >= 2500) {
+        newTier = 'Elite';
+      } else {
+        newTier = 'Signature';
+      }
+
+      await db.update(users).set({
+        points: newPoints,
+        tier: newTier,
+      }).where(eq(users.uid, uid));
+    }
+
+    res.json({ booking: inserted[0] });
+  } catch (error) {
+    console.error('Error in POST /api/bookings:', error);
+    res.status(500).json({ error: 'Failed to create booking reservation.' });
+  }
+});
+
+// Cancel and remove booking
+app.delete('/api/bookings/:id', requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user!.uid;
+    const bookingId = req.params.id;
+
+    await db.delete(bookings).where(and(eq(bookings.id, bookingId), eq(bookings.userUid, uid)));
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error in DELETE /api/bookings/:id:', error);
+    res.status(500).json({ error: 'Failed to delete booking.' });
   }
 });
 

@@ -1,26 +1,26 @@
 import { Store } from './types';
 
-export const HERO_IMAGE = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDU-qv8fVBVqM80426yQUoYAVqgoMZpdN-_gwdfCI-cYgsCJY-PpzMWtStStkfpWnVJqFwpyERU4w1d9pClNCs9OnF-gfhMH5rLWIFGdXDPgROyAq1XGQXWyMb2s5MTEnUlpCtJcB2tiACIzUOf3TxGLBVHJrwSby1PYBimRdFKQJaOBknudh6byBT9kWmcLRylMpRFefc3HtgewQmH2jxJHmPIG2eGu2xIYoKTqE7T6KCaDQhQ1wsG6Q';
+export const HERO_IMAGE = 'https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?auto=format&fit=crop&q=90&w=2500';
 
 export const CATEGORIES = [
   {
     name: 'Fashion',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAWOEcUx75hEd2AxGwo3TlUm0pvs4-hU5jUU1rc-07f7UZA-UrNdnJ1XudzrS0-_wYhOGIvcU3PKnL_LVZvxksHta4sioOSGQkZbSY38Pdo3oViSbLycn2b4pxNUkWCawcBhetl_8hy2-sLoy-JIT5_Fx_uK0gTqAvkj7V4Vh2KFKbQyFkF0gWg8r6ZcwWIR52XFu0MGTnuZ1kpCikRCNOktF0wkjyBh4EKzFZ8NUOQTmYQYGVUiiIZXA',
+    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=1200',
     description: 'Bespoke tailoring and international high-fashion couture.',
   },
   {
     name: 'Tech',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZuL8Jc56OKEGMODPEgZIj6FEdZaKJj5bAk5MS7n-TotRD3gG7nVUHHJq3cXWNcvrmsZjBsyTEjt7K9Ob-aXkkZK2gduJxQbA7FPMdYEn8YTiDmAsvP2iw3dvLaroYJOJNWPygQTPjvAR9OkS4viXdSvPBMszqSDXgcmhJ2TzcBamVHu0SJxrc-IgGgSrkjgoCn6hLxWLKI7rEbR4I3tGaviuArK-3WQS7t1IxzcLC6DG6swnfouGkDA',
+    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=1200',
     description: 'State-of-the-art innovation and refined consumer hardware.',
   },
   {
     name: 'Dining',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqMob5r31joOiUPpFRlOaRl0FZzXT5w_Bylg0iE4ig43YujmsZKiw25iajILAIesjILYS1QrjDFgbrBbpx3wAJ0fYG4ygj30UA852YgWAXsM3O1TmgXv_sdUMsc6W5C-dpw8-9gcPTAIgrJyVpkl8F1cN2fv9OztTyl4gbQmE01e4z_GXC-FGrpm8uAj_MLNRyBf7572_ihYXI5MCZauDD3DyCAHY7LCrlW31xz8NciG0ez52jYJhWGA',
+    image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=1200',
     description: 'Michelin-starred gastronomy and exceptional artisan cafes.',
   },
   {
     name: 'Beauty',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuClDv5ePKpe9FIGYnUCYeIhv-OkNgkjS89bJVaeQaP1w0pXOxgtx1MyH4TCXV5qtxO-_9c0OryvtasN1dxcTQEw5DbK3oOYPWYFaTh3JEXIlU7eqUYSkag0pTx16LYbhEf-yYoZFV1Hfygy7s_1B8Q_n6I6FCEqHsK9ig9F12WUUXQ0LZPOhOI2NUOSb5OMJ-Abk-uWESwm77r5A70KxpTX3WE7-YGj8muepBkLhJNGk6M0P1-gkzLxXA',
+    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&q=80&w=1200',
     description: 'Bespoke fragrances, luxury skincare, and holistic wellness.',
   },
 ] as const;
@@ -31,7 +31,7 @@ export const STORES: Store[] = [
     name: 'Apple Store',
     category: 'Tech',
     tagline: 'Tech & Innovation',
-    coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBYy9xFaX1_RLmSnLnzAFq38KuTazM_peHTx6jlj5xuJ9kpkuKtffLcT2WBCfsasAMntkIps1zhgbflBDQWcUCLiUje103d9G8eBeTifmf2Bnp-dy5CwOzxwuBUbDC4Pg-itoC3QzOK4nO6J-1-Y5pNYGxHd6lHGuODUNmvmPKeL2kzohGULhIyO5LEAczIOsFPjTaevhviliqDEcoe1P07Ri_b0VSBM4Z3ZwM_C_h0jBk12aHKnKhU0w',
+    coverImage: 'https://images.unsplash.com/photo-1563206767-5b18f218e8de?auto=format&fit=crop&q=80&w=1600',
     description: 'Explore the future of personal technology at our architectural masterwork. From the latest iPhone and iPad to the bespoke Vision Pro custom fitting experience, Apple Store LUXE Mall offers hands-on guidance from our specialized Tech Creatives.',
     floor: 'Floor 2, Wing A',
     hours: '10:00 AM - 10:00 PM',
@@ -48,14 +48,14 @@ export const STORES: Store[] = [
         id: 'apple-1',
         name: 'Apple Vision Pro',
         price: '$3,499',
-        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZuL8Jc56OKEGMODPEgZIj6FEdZaKJj5bAk5MS7n-TotRD3gG7nVUHHJq3cXWNcvrmsZjBsyTEjt7K9Ob-aXkkZK2gduJxQbA7FPMdYEn8YTiDmAsvP2iw3dvLaroYJOJNWPygQTPjvAR9OkS4viXdSvPBMszqSDXgcmhJ2TzcBamVHu0SJxrc-IgGgSrkjgoCn6hLxWLKI7rEbR4I3tGaviuArK-3WQS7t1IxzcLC6DG6swnfouGkDA',
+        image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=600',
         description: 'Apple\'s spatial computer that blends digital content with the physical world.'
       },
       {
         id: 'apple-2',
         name: 'iPhone 15 Pro Titanium',
         price: '$1,199',
-        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZuL8Jc56OKEGMODPEgZIj6FEdZaKJj5bAk5MS7n-TotRD3gG7nVUHHJq3cXWNcvrmsZjBsyTEjt7K9Ob-aXkkZK2gduJxQbA7FPMdYEn8YTiDmAsvP2iw3dvLaroYJOJNWPygQTPjvAR9OkS4viXdSvPBMszqSDXgcmhJ2TzcBamVHu0SJxrc-IgGgSrkjgoCn6hLxWLKI7rEbR4I3tGaviuArK-3WQS7t1IxzcLC6DG6swnfouGkDA',
+        image: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?auto=format&fit=crop&q=80&w=600',
         description: 'Forged in aerospace-grade titanium, featuring the groundbreaking A17 Pro chip.'
       }
     ],
@@ -74,7 +74,7 @@ export const STORES: Store[] = [
     name: 'Gucci',
     category: 'Fashion',
     tagline: 'High Fashion',
-    coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBQJqfefJj3nomWBhkBWb-BB5rcuw_EvrqsHomB51ERdy-W_90XaIyP815LEUl1a5XQtX7Qj01MMfzVHg42FgPZwoa6yd7irJW4OZuyVKrjVUemSo5GoDSNAH0UcgcGhRV2mbnerPV_MJ10d5CBdKFqt6Da73maH7V-K2g9x3WY0BdAQumbokWXXVVr7T3SMHeCMzl370IeBQ-WwPWdEp-Q8EFNsYnhJpDET2EUzj9ElLf2X87NVqeVjg',
+    coverImage: 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80&w=1600',
     description: 'Gucci redefines 21st-century luxury with an exceptional Italian craftsmanship showcase. Our magnificent boutique features dark velvet partitions, golden accents, and premium, highly limited runway pieces available only to our Inner Circle members.',
     floor: 'Floor 1, Grand Rotunda',
     hours: '10:00 AM - 9:30 PM',
@@ -91,14 +91,14 @@ export const STORES: Store[] = [
         id: 'gucci-1',
         name: 'Gucci Ancora Silk Gown',
         price: '$4,800',
-        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAWOEcUx75hEd2AxGwo3TlUm0pvs4-hU5jUU1rc-07f7UZA-UrNdnJ1XudzrS0-_wYhOGIvcU3PKnL_LVZvxksHta4sioOSGQkZbSY38Pdo3oViSbLycn2b4pxNUkWCawcBhetl_8hy2-sLoy-JIT5_Fx_uK0gTqAvkj7V4Vh2KFKbQyFkF0gWg8r6ZcwWIR52XFu0MGTnuZ1kpCikRCNOktF0wkjyBh4EKzFZ8NUOQTmYQYGVUiiIZXA',
+        image: 'https://images.unsplash.com/photo-1539008835154-1558040b61c7?auto=format&fit=crop&q=80&w=600',
         description: 'An exquisite black silk runway masterpiece with custom draping.'
       },
       {
         id: 'gucci-2',
         name: 'Horsebit 1955 Fine Leather Shoulder Bag',
         price: '$3,250',
-        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAWOEcUx75hEd2AxGwo3TlUm0pvs4-hU5jUU1rc-07f7UZA-UrNdnJ1XudzrS0-_wYhOGIvcU3PKnL_LVZvxksHta4sioOSGQkZbSY38Pdo3oViSbLycn2b4pxNUkWCawcBhetl_8hy2-sLoy-JIT5_Fx_uK0gTqAvkj7V4Vh2KFKbQyFkF0gWg8r6ZcwWIR52XFu0MGTnuZ1kpCikRCNOktF0wkjyBh4EKzFZ8NUOQTmYQYGVUiiIZXA',
+        image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=600',
         description: 'Timeless luxury structured shoulder bag in prestige calfskin leather.'
       }
     ],
@@ -117,7 +117,7 @@ export const STORES: Store[] = [
     name: 'Tesla',
     category: 'Tech',
     tagline: 'Electric Future',
-    coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBy3lbQzwg8CLAGJ2vA9px_0yIxXPAjYQMq4P_wt6v2JqYlGAzrAt3P1rTKoK6q_h34QQ1uCyEbje5AFigz7BhEH4_1qCco-xeua97m6oafG0wheqBpFU-cLYuYZp_7OyxYP_0tkgnPSRkpczVhdm9Sd_FSj25bTQ5zD7FaFkPKE0dxZGh9-zqmoP1n74wP9TOVmkzU4eyh_A-6xlUY-2aMXs725rlHDxiqOMV6nWjLWK7Zr5P8GmgjHA',
+    coverImage: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=1600',
     description: 'Experience the transition to sustainable energy. Explore Model S, Model X, Cybertruck, and design your dream Tesla in our minimalist gallery. Speak with specialists to customize your charging network setup and arrange private test drives.',
     floor: 'Floor 1, South Esplanade',
     hours: '10:00 AM - 9:00 PM',
@@ -134,14 +134,14 @@ export const STORES: Store[] = [
         id: 'tesla-1',
         name: 'Tesla Model S Plaid',
         price: '$89,990',
-        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBy3lbQzwg8CLAGJ2vA9px_0yIxXPAjYQMq4P_wt6v2JqYlGAzrAt3P1rTKoK6q_h34QQ1uCyEbje5AFigz7BhEH4_1qCco-xeua97m6oafG0wheqBpFU-cLYuYZp_7OyxYP_0tkgnPSRkpczVhdm9Sd_FSj25bTQ5zD7FaFkPKE0dxZGh9-zqmoP1n74wP9TOVmkzU4eyh_A-6xlUY-2aMXs725rlHDxiqOMV6nWjLWK7Zr5P8GmgjHA',
+        image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=600',
         description: 'Triple motor AWD setup delivering 1,020 horsepower and 0-60 mph in 1.99s.'
       },
       {
         id: 'tesla-2',
         name: 'Cybertruck Cyberbeast',
         price: '$99,990',
-        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBy3lbQzwg8CLAGJ2vA9px_0yIxXPAjYQMq4P_wt6v2JqYlGAzrAt3P1rTKoK6q_h34QQ1uCyEbje5AFigz7BhEH4_1qCco-xeua97m6oafG0wheqBpFU-cLYuYZp_7OyxYP_0tkgnPSRkpczVhdm9Sd_FSj25bTQ5zD7FaFkPKE0dxZGh9-zqmoP1n74wP9TOVmkzU4eyh_A-6xlUY-2aMXs725rlHDxiqOMV6nWjLWK7Zr5P8GmgjHA',
+        image: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=600',
         description: 'Extremely durable stainless steel exoskeleton with brutalist futuristic aesthetic.'
       }
     ],
@@ -160,7 +160,7 @@ export const STORES: Store[] = [
     name: 'Chanel Fragrance & Beauty',
     category: 'Beauty',
     tagline: 'Luxury Fragrance & Wellness',
-    coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuClDv5ePKpe9FIGYnUCYeIhv-OkNgkjS89bJVaeQaP1w0pXOxgtx1MyH4TCXV5qtxO-_9c0OryvtasN1dxcTQEw5DbK3oOYPWYFaTh3JEXIlU7eqUYSkag0pTx16LYbhEf-yYoZFV1Hfygy7s_1B8Q_n6I6FCEqHsK9ig9F12WUUXQ0LZPOhOI2NUOSb5OMJ-Abk-uWESwm77r5A70KxpTX3WE7-YGj8muepBkLhJNGk6M0P1-gkzLxXA',
+    coverImage: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=1600',
     description: 'Immerse yourself in the world of Chanel fragrance, prestige skincare, and high-end makeup. Our elegant boutique offers private consultation suites for custom scent profiling and holistic luxury facial treatments.',
     floor: 'Floor 1, West Promenade',
     hours: '10:00 AM - 9:30 PM',
@@ -177,14 +177,14 @@ export const STORES: Store[] = [
         id: 'chanel-1',
         name: 'Les Exclusifs de Chanel - Sycomore',
         price: '$450',
-        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuClDv5ePKpe9FIGYnUCYeIhv-OkNgkjS89bJVaeQaP1w0pXOxgtx1MyH4TCXV5qtxO-_9c0OryvtasN1dxcTQEw5DbK3oOYPWYFaTh3JEXIlU7eqUYSkag0pTx16LYbhEf-yYoZFV1Hfygy7s_1B8Q_n6I6FCEqHsK9ig9F12WUUXQ0LZPOhOI2NUOSb5OMJ-Abk-uWESwm77r5A70KxpTX3WE7-YGj8muepBkLhJNGk6M0P1-gkzLxXA',
+        image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=600',
         description: 'A prestige woody fragrance with accents of vetiver, smoke, and cedar.'
       },
       {
         id: 'chanel-2',
         name: 'Sublimage L\'Extrait de Crème',
         price: '$700',
-        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuClDv5ePKpe9FIGYnUCYeIhv-OkNgkjS89bJVaeQaP1w0pXOxgtx1MyH4TCXV5qtxO-_9c0OryvtasN1dxcTQEw5DbK3oOYPWYFaTh3JEXIlU7eqUYSkag0pTx16LYbhEf-yYoZFV1Hfygy7s_1B8Q_n6I6FCEqHsK9ig9F12WUUXQ0LZPOhOI2NUOSb5OMJ-Abk-uWESwm77r5A70KxpTX3WE7-YGj8muepBkLhJNGk6M0P1-gkzLxXA',
+        image: 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&q=80&w=600',
         description: 'The ultimate luxury skin regeneration cream infused with active planifolia fractions.'
       }
     ],
@@ -203,7 +203,7 @@ export const STORES: Store[] = [
     name: 'Le Luxe Bistro & Pâtisserie',
     category: 'Dining',
     tagline: 'Michelin-starred Gastronomy',
-    coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqMob5r31joOiUPpFRlOaRl0FZzXT5w_Bylg0iE4ig43YujmsZKiw25iajILAIesjILYS1QrjDFgbrBbpx3wAJ0fYG4ygj30UA852YgWAXsM3O1TmgXv_sdUMsc6W5C-dpw8-9gcPTAIgrJyVpkl8F1cN2fv9OztTyl4gbQmE01e4z_GXC-FGrpm8uAj_MLNRyBf7572_ihYXI5MCZauDD3DyCAHY7LCrlW31xz8NciG0ez52jYJhWGA',
+    coverImage: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1600',
     description: 'A delicate dining sanctuary presenting contemporary French gastronomy. Under the guidance of our Michelin-starred chef, Le Luxe Bistro combines rare ingredients with magnificent presentation to create a memorable culinary interlude.',
     floor: 'Floor 3, Skylight Conservatory',
     hours: '11:00 AM - 10:30 PM',
@@ -220,14 +220,14 @@ export const STORES: Store[] = [
         id: 'dining-1',
         name: 'The Golden Pear Pâtisserie',
         price: '$35',
-        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqMob5r31joOiUPpFRlOaRl0FZzXT5w_Bylg0iE4ig43YujmsZKiw25iajILAIesjILYS1QrjDFgbrBbpx3wAJ0fYG4ygj30UA852YgWAXsM3O1TmgXv_sdUMsc6W5C-dpw8-9gcPTAIgrJyVpkl8F1cN2fv9OztTyl4gbQmE01e4z_GXC-FGrpm8uAj_MLNRyBf7572_ihYXI5MCZauDD3DyCAHY7LCrlW31xz8NciG0ez52jYJhWGA',
+        image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=600',
         description: 'A spectacular edible art piece infused with vanilla mousse, caramelised pear core, and gold leaf coating.'
       },
       {
         id: 'dining-2',
         name: 'Vintage Champagne Caviar Tasting',
         price: '$240',
-        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqMob5r31joOiUPpFRlOaRl0FZzXT5w_Bylg0iE4ig43YujmsZKiw25iajILAIesjILYS1QrjDFgbrBbpx3wAJ0fYG4ygj30UA852YgWAXsM3O1TmgXv_sdUMsc6W5C-dpw8-9gcPTAIgrJyVpkl8F1cN2fv9OztTyl4gbQmE01e4z_GXC-FGrpm8uAj_MLNRyBf7572_ihYXI5MCZauDD3DyCAHY7LCrlW31xz8NciG0ez52jYJhWGA',
+        image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=600',
         description: 'A flight of three vintage champagnes paired with elite sustainable Ossetra caviar.'
       }
     ],

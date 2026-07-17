@@ -9,6 +9,8 @@ import ConciergeChat from './components/ConciergeChat';
 import StoreModal from './components/StoreModal';
 import { Menu, ShoppingBag, Home, Search, Store as StoreIcon, User, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { auth, googleAuthProvider } from './lib/firebase';
+import { signInWithPopup, signOut, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'search' | 'stores' | 'profile'>('home');
@@ -18,7 +20,11 @@ export default function App() {
   const [isLoadingConcierge, setIsLoadingConcierge] = useState(false);
   const [conciergeInitialPrompt, setConciergeInitialPrompt] = useState<string | undefined>(undefined);
 
-  // Persistence States
+  // Authentication & Database-backed state
+  const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [member, setMember] = useState<LuxeMember | null>(null);
   const [messages, setMessages] = useState<Message[]>([
@@ -35,33 +41,9 @@ export default function App() {
     },
   ]);
 
-  // Load state from localStorage on mount
+  // Load chat messages from localStorage
   useEffect(() => {
-    const savedBookings = localStorage.getItem('luxe_bookings');
-    const savedMember = localStorage.getItem('luxe_member');
     const savedMessages = localStorage.getItem('luxe_messages');
-
-    if (savedBookings) {
-      setBookings(JSON.parse(savedBookings));
-    }
-    if (savedMember) {
-      setMember(JSON.parse(savedMember));
-    } else {
-      // Seed default member profile for premium feel
-      const defaultMember: LuxeMember = {
-        name: 'Alexander Sterling',
-        email: 'alexander@sterling.co',
-        phone: '+1 (555) 723-9201',
-        tier: 'Elite',
-        points: 4250,
-        cardId: 'LUXE-9021-ELITE',
-        memberSince: 'JAN 2026',
-        valetCode: 'VALET-882X',
-      };
-      setMember(defaultMember);
-      localStorage.setItem('luxe_member', JSON.stringify(defaultMember));
-    }
-
     if (savedMessages) {
       try {
         const parsedMsgs = JSON.parse(savedMessages);
@@ -77,15 +59,78 @@ export default function App() {
     }
   }, []);
 
-  // Save states to localStorage when changed
-  const saveBookings = (newBookings: Booking[]) => {
-    setBookings(newBookings);
-    localStorage.setItem('luxe_bookings', JSON.stringify(newBookings));
+  // Sync with Firebase Auth state
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setAuthUser(user);
+        try {
+          const token = await user.getIdToken();
+          setAuthToken(token);
+          await fetchUserProfileAndBookings(token);
+        } catch (error) {
+          console.error('Error getting auth token or profiles:', error);
+        }
+      } else {
+        setAuthUser(null);
+        setAuthToken(null);
+        setMember(null);
+        setBookings([]);
+      }
+      setIsAuthLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const fetchUserProfileAndBookings = async (token: string) => {
+    try {
+      // Fetch profile
+      const userRes = await fetch('/api/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (userRes.ok) {
+        const userData = await userRes.json();
+        setMember(userData.user);
+      } else {
+        setMember(null);
+      }
+
+      // Fetch bookings
+      const bookingsRes = await fetch('/api/bookings', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (bookingsRes.ok) {
+        const bookingsData = await bookingsRes.json();
+        setBookings(bookingsData.bookings);
+      }
+    } catch (error) {
+      console.error('Error fetching database data:', error);
+    }
   };
 
-  const saveMember = (newMember: LuxeMember | null) => {
-    setMember(newMember);
-    localStorage.setItem('luxe_member', JSON.stringify(newMember));
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsAuthLoading(true);
+      await signInWithPopup(auth, googleAuthProvider);
+    } catch (error) {
+      console.error('Google Sign-In failed:', error);
+      setIsAuthLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      setIsAuthLoading(true);
+      await signOut(auth);
+    } catch (error) {
+      console.error('Sign out failed:', error);
+      setIsAuthLoading(false);
+    }
   };
 
   const saveMessages = (newMsgs: Message[]) => {
@@ -93,92 +138,164 @@ export default function App() {
     localStorage.setItem('luxe_messages', JSON.stringify(newMsgs));
   };
 
-  // Register membership
-  const handleRegister = (name: string, email: string, phone: string) => {
-    const newMember: LuxeMember = {
-      name,
-      email,
-      phone,
-      tier: 'Signature',
-      points: 500, // starting points bonus
-      cardId: `LUXE-${Math.floor(1000 + Math.random() * 9000)}-SIGN`,
-      memberSince: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase(),
-      valetCode: `VALET-${Math.floor(100 + Math.random() * 900)}X`,
-    };
-    saveMember(newMember);
-  };
+  // Register membership in PostgreSQL
+  const handleRegister = async (name: string, email: string, phone: string) => {
+    if (!authToken) return;
+    try {
+      setIsAuthLoading(true);
+      const res = await fetch('/api/users/sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({ name, phone })
+      });
 
-  // Cancel reservation
-  const handleCancelBooking = (id: string) => {
-    const updated = bookings.filter((b) => b.id !== id);
-    saveBookings(updated);
-  };
-
-  // Create a reservation booking
-  const handleBook = (type: BookingType, date: string, time: string, notes?: string) => {
-    const targetStore = selectedStore;
-    const newBooking: Booking = {
-      id: Math.random().toString(36).substring(7),
-      storeId: targetStore?.id,
-      storeName: targetStore?.name,
-      type,
-      date,
-      time,
-      status: 'confirmed',
-      notes,
-      createdAt: new Date().toISOString(),
-    };
-
-    const newBookingsList = [newBooking, ...bookings];
-    saveBookings(newBookingsList);
-
-    // Give points to member for bookings
-    if (member) {
-      const updatedMember = {
-        ...member,
-        points: member.points + 500,
-        // Upgrade tier based on points
-        tier: (member.points + 500 >= 10000
-          ? 'Inner Circle'
-          : member.points + 500 >= 5000
-          ? 'Prestige'
-          : 'Elite') as any,
-      };
-      saveMember(updatedMember);
+      if (res.ok) {
+        const data = await res.json();
+        setMember(data.user);
+      } else {
+        console.error('Failed to register user in db:', res.statusText);
+      }
+    } catch (error) {
+      console.error('Error registering user in db:', error);
+    } finally {
+      setIsAuthLoading(false);
     }
   };
 
-  // Handle in-chat reservations
-  const handleInChatBooking = (type: BookingType, storeName?: string) => {
-    const storeObj = STORES.find((s) => s.name.toLowerCase() === storeName?.toLowerCase());
-    const newBooking: Booking = {
-      id: Math.random().toString(36).substring(7),
-      storeId: storeObj?.id,
-      storeName: storeName || 'Luxe Valet Terminal',
-      type,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      time: '3:00 PM', // Default slot
-      status: 'confirmed',
-      notes: 'Reserved via AI Shopper Concierge',
-      createdAt: new Date().toISOString(),
-    };
+  // Cancel reservation in PostgreSQL
+  const handleCancelBooking = async (id: string) => {
+    if (!authToken) return;
+    try {
+      const res = await fetch(`/api/bookings/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
 
-    saveBookings([newBooking, ...bookings]);
+      if (res.ok) {
+        setBookings(prev => prev.filter(b => b.id !== id));
+      } else {
+        console.error('Failed to cancel booking:', res.statusText);
+      }
+    } catch (error) {
+      console.error('Error cancelling booking:', error);
+    }
+  };
 
-    // Add success confirmation message from AI
-    const confirmationMsg: Message = {
-      id: Math.random().toString(),
-      sender: 'ai',
-      text: `I have successfully reserved your ${type.replace('_', ' ')} booking${
-        storeName ? ` at ${storeName}` : ''
-      } for today at 3:00 PM. You can view your dynamic barcode pass in the Profile tab. Enjoy your exclusive treatment!`,
-      timestamp: new Date(),
-    };
-    saveMessages([...messages, confirmationMsg]);
+  // Create a reservation booking in PostgreSQL
+  const handleBook = async (type: BookingType, date: string, time: string, notes?: string) => {
+    if (!authToken) {
+      setActiveTab('profile');
+      return;
+    }
 
-    // Switch to profile tab to showcase booking
-    setActiveTab('profile');
-    setIsConciergeOpen(false);
+    try {
+      const targetStore = selectedStore;
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({
+          storeId: targetStore?.id,
+          storeName: targetStore?.name,
+          type,
+          date,
+          time,
+          notes
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setBookings(prev => [data.booking, ...prev]);
+
+        // Refresh user details to reflect added points & tier
+        const userRes = await fetch('/api/me', {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          setMember(userData.user);
+        }
+      } else {
+        console.error('Failed to create booking:', res.statusText);
+      }
+    } catch (error) {
+      console.error('Error creating booking:', error);
+    }
+  };
+
+  // Handle in-chat reservations in PostgreSQL
+  const handleInChatBooking = async (type: BookingType, storeName?: string) => {
+    if (!authToken) {
+      const signinMsg: Message = {
+        id: Math.random().toString(),
+        sender: 'ai',
+        text: 'To secure your VIP reservation, please sign in via the Profile tab first. Once authenticated, I can instantly book your appointment.',
+        timestamp: new Date(),
+      };
+      saveMessages([...messages, signinMsg]);
+      setActiveTab('profile');
+      setIsConciergeOpen(false);
+      return;
+    }
+
+    try {
+      const storeObj = STORES.find((s) => s.name.toLowerCase() === storeName?.toLowerCase());
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({
+          storeId: storeObj?.id,
+          storeName: storeName || 'Luxe Valet Terminal',
+          type,
+          date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          time: '3:00 PM',
+          notes: 'Reserved via AI Shopper Concierge'
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setBookings(prev => [data.booking, ...prev]);
+
+        // Refresh profile
+        const userRes = await fetch('/api/me', {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          setMember(userData.user);
+        }
+
+        const confirmationMsg: Message = {
+          id: Math.random().toString(),
+          sender: 'ai',
+          text: `I have successfully reserved your ${type.replace('_', ' ')} booking${
+            storeName ? ` at ${storeName}` : ''
+          } for today at 3:00 PM. You can view your dynamic barcode pass in the Profile tab. Enjoy your exclusive treatment!`,
+          timestamp: new Date(),
+        };
+        saveMessages([...messages, confirmationMsg]);
+        setActiveTab('profile');
+        setIsConciergeOpen(false);
+      }
+    } catch (error) {
+      console.error('Error creating in-chat booking:', error);
+    }
   };
 
   // Trigger AI chat window with optional query
@@ -319,6 +436,10 @@ export default function App() {
                 onRegister={handleRegister}
                 bookings={bookings}
                 onCancelBooking={handleCancelBooking}
+                onGoogleSignIn={handleGoogleSignIn}
+                onSignOut={handleSignOut}
+                isAuthLoading={isAuthLoading}
+                authUser={authUser}
               />
             )}
           </motion.div>
