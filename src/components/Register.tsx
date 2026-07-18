@@ -11,9 +11,11 @@ import {
 
 import { supabase } from "../lib/supabase";
 
+
 interface Props {
   onLogin: () => void;
 }
+
 
 export default function Register({ onLogin }: Props) {
 
@@ -23,16 +25,20 @@ export default function Register({ onLogin }: Props) {
   const [show,setShow]=useState(false);
   const [loading,setLoading]=useState(false);
 
+
+
   async function handleRegister(){
 
-    if(!email || !password){
-      alert("Fill all fields");
+    if(!name || !email || !password){
+      alert("Please fill all fields");
       return;
     }
 
+
     setLoading(true);
 
-    const {error}=await supabase.auth.signUp({
+
+    const {data,error}=await supabase.auth.signUp({
 
       email,
 
@@ -46,54 +52,160 @@ export default function Register({ onLogin }: Props) {
 
     });
 
-    setLoading(false);
+
 
     if(error){
+
+      setLoading(false);
       alert(error.message);
       return;
+
     }
 
-    alert("Registration Successful");
+
+
+    // create member profile
+
+    if(data.user){
+
+      const {error:memberError}=await supabase
+      .from("members")
+      .insert({
+
+        user_id:data.user.id,
+
+        name:name,
+
+        email:email,
+
+        phone:"",
+
+        tier:"Signature",
+
+        points:0,
+
+        card_id:
+        `LX-${data.user.id.slice(0,8).toUpperCase()}`,
+
+        member_since:
+        new Date().getFullYear().toString()
+
+      });
+
+
+
+      if(memberError){
+
+        console.log(memberError.message);
+
+      }
+
+    }
+
+
+
+    setLoading(false);
+
+
+    alert(
+      "Registration successful. Please check email verification."
+    );
+
 
     onLogin();
 
   }
 
-  return(
 
-<div className="min-h-screen bg-black flex items-center justify-center px-6">
+
+
+
+return(
+
+<div className="
+min-h-screen
+bg-black
+flex
+items-center
+justify-center
+px-6
+">
+
 
 <motion.div
 
-initial={{opacity:0,scale:.9}}
+initial={{
+opacity:0,
+scale:.9
+}}
 
-animate={{opacity:1,scale:1}}
+animate={{
+opacity:1,
+scale:1
+}}
 
-className="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8"
+className="
+w-full
+max-w-md
+rounded-3xl
+border
+border-white/10
+bg-white/5
+backdrop-blur-xl
+p-8
+"
 
 >
 
-<h1 className="text-4xl font-bold text-center text-white">
+
+<h1 className="
+text-4xl
+font-bold
+text-center
+text-white
+">
 
 Create Account
 
 </h1>
 
-<p className="text-center mt-3 text-neutral-400">
+
+<p className="
+text-center
+mt-3
+text-neutral-400
+">
 
 Join LUXE Membership
 
 </p>
 
+
+
 <div className="space-y-5 mt-8">
+
+
 
 <div className="relative">
 
-<User className="absolute left-4 top-4 text-neutral-500"/>
+<User className="
+absolute
+left-4
+top-4
+text-neutral-500
+"/>
+
 
 <input
 
-className="w-full bg-neutral-900 rounded-xl py-4 pl-12"
+className="
+w-full
+bg-neutral-900
+text-white
+rounded-xl
+py-4
+pl-12
+"
 
 placeholder="Full Name"
 
@@ -105,13 +217,31 @@ onChange={(e)=>setName(e.target.value)}
 
 </div>
 
+
+
+
 <div className="relative">
 
-<Mail className="absolute left-4 top-4 text-neutral-500"/>
+<Mail className="
+absolute
+left-4
+top-4
+text-neutral-500
+"/>
+
 
 <input
 
-className="w-full bg-neutral-900 rounded-xl py-4 pl-12"
+type="email"
+
+className="
+w-full
+bg-neutral-900
+text-white
+rounded-xl
+py-4
+pl-12
+"
 
 placeholder="Email"
 
@@ -121,17 +251,41 @@ onChange={(e)=>setEmail(e.target.value)}
 
 />
 
+
 </div>
+
+
+
 
 <div className="relative">
 
-<Lock className="absolute left-4 top-4 text-neutral-500"/>
+<Lock className="
+absolute
+left-4
+top-4
+text-neutral-500
+"/>
+
 
 <input
 
-type={show?"text":"password"}
+type={
+show
+?
+"text"
+:
+"password"
+}
 
-className="w-full bg-neutral-900 rounded-xl py-4 pl-12 pr-12"
+className="
+w-full
+bg-neutral-900
+text-white
+rounded-xl
+py-4
+pl-12
+pr-12
+"
 
 placeholder="Password"
 
@@ -141,51 +295,109 @@ onChange={(e)=>setPassword(e.target.value)}
 
 />
 
+
+
 <button
 
-onClick={()=>setShow(!show)}
+type="button"
 
-className="absolute right-4 top-4 text-neutral-500"
+onClick={()=>
+setShow(!show)
+}
+
+className="
+absolute
+right-4
+top-4
+text-neutral-500
+"
 
 >
 
-{show?<EyeOff/>:<Eye/>}
+{
+show
+?
+<EyeOff/>
+:
+<Eye/>
+}
 
 </button>
 
+
 </div>
+
+
+
 
 <motion.button
 
-whileHover={{scale:1.03}}
+whileHover={{
+scale:1.03
+}}
 
-whileTap={{scale:.95}}
+whileTap={{
+scale:.95
+}}
 
 onClick={handleRegister}
 
 disabled={loading}
 
-className="w-full rounded-xl py-4 bg-white text-black font-semibold flex items-center justify-center gap-2"
+className="
+w-full
+rounded-xl
+py-4
+bg-white
+text-black
+font-semibold
+flex
+items-center
+justify-center
+gap-2
+"
 
 >
 
-{loading?"Creating...":"Create Account"}
+{
+loading
+?
+"Creating..."
+:
+"Create Account"
+}
+
 
 <ArrowRight size={18}/>
 
+
 </motion.button>
+
 
 </div>
 
-<p className="text-center text-neutral-400 mt-8">
+
+
+
+<p className="
+text-center
+text-neutral-400
+mt-8
+">
+
 
 Already have an account?
+
 
 <button
 
 onClick={onLogin}
 
-className="ml-2 text-white font-semibold"
+className="
+ml-2
+text-white
+font-semibold
+"
 
 >
 
@@ -193,9 +405,13 @@ Login
 
 </button>
 
+
 </p>
 
+
+
 </motion.div>
+
 
 </div>
 
