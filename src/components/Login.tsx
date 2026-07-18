@@ -15,9 +15,10 @@ import { supabase } from "../lib/supabase";
 interface Props {
   onSuccess: () => void;
   onRegister: () => void;
+  onForgotPassword: () => void;
 }
 
-export default function Login({ onSuccess, onRegister }: Props) {
+export default function Login({ onSuccess, onRegister, onForgotPassword }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -170,9 +171,16 @@ export default function Login({ onSuccess, onRegister }: Props) {
 
           </label>
 
-          <button className="text-sm text-yellow-400 hover:text-yellow-300">
-            Forgot Password?
+          <button onClick={onForgotPassword}
+          className="
+          text-sm
+          text-yellow-400
+          hover:text-yellow-300
+          "
+          >
+          Forgot Password?
           </button>
+
 
         </div>
 
