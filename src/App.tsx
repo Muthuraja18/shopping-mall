@@ -15,9 +15,9 @@ import StoresView from "./components/StoresView";
 import ProfileView from "./components/ProfileView";
 import BottomNav from "./components/BottomNav";
 
-import PrivacyPolicy from "./components/PrivacyPolicy";
-import TermsOfService from "./components/TermsOfService";
-import ContactUs from "./components/ContactUs";
+import PrivacyPolicy from "./components/Privacypolicy";
+import TermsOfService from "./components/Termsofservice";
+import ContactUs from "./components/Contactus";
 import Sustainability from "./components/Sustainability";
 import type { InfoPageType } from "./components/HomeView";
 
@@ -75,6 +75,7 @@ export default function App() {
           id: "welcome",
           sender: "ai",
           text: "Welcome to LUXE Mall. I'm delighted to assist — ask me about boutiques, events, or reserve a private experience.",
+          timestamp: Date.now(),
         },
       ]);
     }
@@ -90,6 +91,7 @@ export default function App() {
       id: `${Date.now()}-user`,
       sender: "user",
       text,
+      timestamp: Date.now(),
     };
 
     const nextMessages = [...conciergeMessages, userMessage];
@@ -117,6 +119,7 @@ export default function App() {
         text: data.reply,
         suggestions: data.suggestions,
         bookingOffer: data.bookingOffer,
+        timestamp: Date.now(),
       };
 
       setConciergeMessages((prev) => [...prev, aiMessage]);
@@ -128,6 +131,7 @@ export default function App() {
           id: `${Date.now()}-error`,
           sender: "ai",
           text: "My apologies, I'm having trouble connecting right now. Please try again in a moment.",
+          timestamp: Date.now(),
         },
       ]);
     } finally {
@@ -162,12 +166,18 @@ export default function App() {
     }
 
     setConciergeMessages((prev) => [
+
       ...prev,
+
       {
+
         id: `${Date.now()}-confirm`,
         sender: "ai",
         text: `Wonderful — your ${type.replace("_", " ")}${storeName ? ` at ${storeName}` : ""} has been reserved. You'll find it under your Profile.`,
+        timestamp: Date.now(),
+
       },
+
     ]);
   }
 
@@ -426,6 +436,8 @@ export default function App() {
                 <StoresView
 
                   onSelectStore={(store)=>console.log(store)}
+
+                  onBookAmenity={(store) => handleOpenConcierge(`Book an experience at ${store.name}`)}
 
                 />
 
