@@ -3,6 +3,8 @@ import { CATEGORIES, HERO_IMAGE, STORES } from '../data';
 import { Store } from '../types';
 import { ChevronRight, Sparkles, ArrowRight } from 'lucide-react';
 
+export type InfoPageType = 'privacy' | 'terms' | 'contact' | 'sustainability';
+
 interface HomeViewProps {
   onSelectStore: (store: Store) => void;
   onSelectCategory: (category: 'Fashion' | 'Tech' | 'Dining' | 'Beauty') => void;
@@ -10,6 +12,7 @@ interface HomeViewProps {
   onOpenConcierge: () => void;
   isMember: boolean;
   onSwitchTab: (tab: 'home' | 'search' | 'stores' | 'profile') => void;
+  onNavigateInfo: (page: InfoPageType) => void;
 }
 
 export default function HomeView({
@@ -19,6 +22,7 @@ export default function HomeView({
   onOpenConcierge,
   isMember,
   onSwitchTab,
+  onNavigateInfo,
 }: HomeViewProps) {
   // We showcase the spotlights: Apple Store, Gucci, Tesla
   const spotlights = STORES.filter(s => ['apple', 'gucci', 'tesla'].includes(s.id));
@@ -61,19 +65,23 @@ export default function HomeView({
                 An architectural masterwork blending prestige boutiques, digital innovations, and concierge shopping.
               </p>
               <div className="flex flex-wrap gap-3">
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={() => onSwitchTab('stores')}
-                  className="bg-white text-black px-8 py-3 rounded-xl font-medium text-sm hover:bg-neutral-100 active:scale-95 transition-all duration-200 shadow-md cursor-pointer"
+                  className="bg-white text-black px-8 py-3 rounded-xl font-medium text-sm hover:bg-neutral-100 transition-colors duration-200 shadow-md cursor-pointer"
                 >
                   Discover
-                </button>
-                <button
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={onOpenConcierge}
-                  className="bg-white/10 hover:bg-white/20 active:scale-95 border border-white/20 text-white px-6 py-3 rounded-xl font-medium text-sm backdrop-blur-md transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+                  className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-3 rounded-xl font-medium text-sm backdrop-blur-md transition-colors duration-200 cursor-pointer flex items-center gap-1.5"
                 >
                   Plan Your Visit
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </motion.button>
               </div>
             </motion.div>
           </div>
@@ -207,19 +215,31 @@ export default function HomeView({
           LUXE MALL
         </div>
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-          <button className="text-neutral-500 hover:text-neutral-900 text-xs font-light transition-colors">
+          <button
+            onClick={() => onNavigateInfo('privacy')}
+            className="text-neutral-500 hover:text-neutral-900 text-xs font-light transition-colors cursor-pointer"
+          >
             Privacy Policy
           </button>
           <span className="text-neutral-300 text-xs">|</span>
-          <button className="text-neutral-500 hover:text-neutral-900 text-xs font-light transition-colors">
+          <button
+            onClick={() => onNavigateInfo('terms')}
+            className="text-neutral-500 hover:text-neutral-900 text-xs font-light transition-colors cursor-pointer"
+          >
             Terms of Service
           </button>
           <span className="text-neutral-300 text-xs">|</span>
-          <button className="text-neutral-500 hover:text-neutral-900 text-xs font-light transition-colors">
+          <button
+            onClick={() => onNavigateInfo('contact')}
+            className="text-neutral-500 hover:text-neutral-900 text-xs font-light transition-colors cursor-pointer"
+          >
             Contact Us
           </button>
           <span className="text-neutral-300 text-xs">|</span>
-          <button className="text-neutral-500 hover:text-neutral-900 text-xs font-light transition-colors">
+          <button
+            onClick={() => onNavigateInfo('sustainability')}
+            className="text-neutral-500 hover:text-neutral-900 text-xs font-light transition-colors cursor-pointer"
+          >
             Sustainability
           </button>
         </div>
