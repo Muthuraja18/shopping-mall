@@ -105,7 +105,7 @@ export default function App() {
     }));
 
     try {
-      const res = await fetch("/server.ts", {
+      const res = await fetch("/api/concierge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ history }),
